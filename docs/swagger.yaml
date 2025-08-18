@@ -39,6 +39,38 @@ info:
   title: Payslip API
   version: "1.0"
 paths:
+  /api/attendance:
+    post:
+      consumes:
+      - application/json
+      description: Submit attendance for the current day. Attendance is not allowed
+        on weekends. Duplicate same-day attendance is ignored.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: attendance submitted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: bad request / validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Submit attendance
+      tags:
+      - Attendance
   /api/me:
     get:
       description: Get current logged-in user's info from JWT

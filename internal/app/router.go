@@ -37,14 +37,22 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	payrollRepo := repository.NewPayrollPeriodRepository(db)
 	worker.RegisterPayrollPeriodWorker(w, payrollRepo)
 
+	attendanceRepo := repository.NewAttendanceRepository(db)
+	worker.RegisterAttendanceWorker(w, attendanceRepo)
+
 	logRepo := repository.NewLogRepository(db)
 	worker.RegisterLogActivityWorker(w, logRepo)
 
 	w.Start(workerCount)
 
+	// === Services & Handlers ===
 	payrollService := service.NewPayrollPeriodService(q)
 	payrollHandler := handler.NewPayrollPeriodHandler(payrollService)
 
+	attendanceService := service.NewAttendanceService(q)
+	attendanceHandler := handler.NewAttendanceHandler(attendanceService)
+
+	//=== Routes ===
 	api := r.Group("/api")
 	api.Use(middleware.AuthMiddleware())
 	{
@@ -53,6 +61,11 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		api.Use(middleware.RoleMiddleware("admin"))
 		{
 			api.POST("/payroll-period", payrollHandler.Create)
+		}
+
+		api.Use(middleware.RoleMiddleware("employee"))
+		{
+			api.POST("/attendance", attendanceHandler.SubmitAttendance)
 		}
 	}
 }

@@ -10,10 +10,10 @@ import (
 
 func RegisterPayrollPeriodWorker(w *Worker, repo repository.PayrollPeriodRepository) {
 	w.RegisterHandler(queue.CreatePayrollPeriodJobName, func(data interface{}) error {
-		log, ok := data.(model.PayrollPeriod)
+		payrolPeriod, ok := data.(model.PayrollPeriod)
 		if !ok {
 			return fmt.Errorf("invalid data type for payroll period")
 		}
-		return repo.Create(&log)
+		return repo.Create(&payrolPeriod)
 	})
 }

@@ -1,5 +1,5 @@
 package request
 
-type AttendanceRequest struct {
-	Date string `json:"date" binding:"required"` // format: YYYY-MM-DD
+type SubmitAttendanceRequest struct {
+	UserID uint `json:"user_id"` // format: YYYY-MM-DD
 }
